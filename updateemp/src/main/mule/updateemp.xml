@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6489e0aa-9a62-4ac9-94f7-8ee725d73f76" basePath="UpdateEmp" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="8574d0fc-7366-4605-baf8-86d8710e6413" >
+		<db:oracle-connection host="localhost" user="system" password="admin" instance="xe" />
+	</db:config>
+	<flow name="updateempFlow" doc:id="23a88c92-f2b5-4b41-8132-471d4e1a48fb" >
+		<http:listener doc:name="Listener" doc:id="300b3b4c-ebbe-4a9c-b1ce-d292ef55e045" path="data" config-ref="HTTP_Listener_config"/>
+		<logger level="INFO" doc:name="Logger" doc:id="45b90eb0-2618-424e-8351-87f09d59edcb" message="#['process start']"/>
+		<db:update doc:name="Update" doc:id="e9502f48-0c62-49d8-afad-f38cd67cc4b0" config-ref="Database_Config">
+			<db:sql ><![CDATA[update emp2 set empstatus=:status where empid= :id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	status : payload.employee.employeeStatus,
+	id : payload.employee.employeeID
+}]]]></db:input-parameters>
+		</db:update>
+	</flow>
+</mule>

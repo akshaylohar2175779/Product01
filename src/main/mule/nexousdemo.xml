@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a96ae281-e324-4c0f-b2f2-356e1fb3c037" basePath="nexous" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<flow name="nexousdemoFlow" doc:id="f8b51f99-dedb-4a74-8953-2ec20b096e05" >
+		<http:listener doc:name="Listener" doc:id="14fd1215-7e75-4c56-af4e-3ac988397ede" config-ref="HTTP_Listener_config" path="demo"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7715afc3-4160-4640-b4db-0b83bf50e167" message="#['test']"/>
+		<ee:transform doc:name="Transform Message" doc:id="edeb8f74-a2bb-4de7-a222-5282be90a1cc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+  "status": 200,
+  "message": "The request was successful."
+ }
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
